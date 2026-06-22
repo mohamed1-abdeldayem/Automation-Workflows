@@ -1,0 +1,447 @@
+{
+  "name": "Lead Contacts",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "authentication": "airtableTokenApi",
+        "baseId": {
+          "__rl": true,
+          "value": "https://airtable.com/appkPOMkhzwTd33Y3/tblmr4jj8AnrDaNZI/viwqyo2gls2QGky8K?blocks=hide",
+          "mode": "url"
+        },
+        "tableId": {
+          "__rl": true,
+          "value": "https://airtable.com/appkPOMkhzwTd33Y3/tblmr4jj8AnrDaNZI/viwqyo2gls2QGky8K?blocks=hide",
+          "mode": "url"
+        },
+        "triggerField": "Created In",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.airtableTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "7ee5d01f-331e-4dbb-aba1-819b8822d122",
+      "name": "Airtable Trigger",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "gPN2D5Oe56RzMyO5",
+          "name": "Airtable account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "mabdeldayem052@gmail.com",
+        "toEmail": "={{ $json.fields.Email }}",
+        "subject": "=Hey {{ $json.fields['First Name'] }}, let's talk about your goals.",
+        "emailFormat": "text",
+        "text": "=Hi {{ $('Airtable Trigger').item.json.fields['First Name'] }},\nthanks for reaching out about {{ $('Airtable Trigger').item.json.fields.Company }}.\nI’d love to learn more about your goals and how I can help.\nYou can book a call with me here: https://calendly.com/mabdeldayem052/intro-call",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        544,
+        -288
+      ],
+      "id": "2671f65e-8d4f-429f-a915-4d7c7f7b8708",
+      "name": "Send an Email",
+      "webhookId": "fd09074a-e418-4b40-a974-f7150cacbba0",
+      "credentials": {
+        "smtp": {
+          "id": "sdm94F27eEBp1Kl1",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appkPOMkhzwTd33Y3",
+          "mode": "list",
+          "cachedResultName": "Lead Contacts",
+          "cachedResultUrl": "https://airtable.com/appkPOMkhzwTd33Y3"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblmr4jj8AnrDaNZI",
+          "mode": "list",
+          "cachedResultName": "Table 1",
+          "cachedResultUrl": "https://airtable.com/appkPOMkhzwTd33Y3/tblmr4jj8AnrDaNZI"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Contacted": "Contacted",
+            "id": "={{ $('Airtable Trigger').item.json.id }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "First Name",
+              "displayName": "First Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Last Name",
+              "displayName": "Last Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Budget",
+              "displayName": "Budget",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Notes",
+              "displayName": "Notes",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Created In",
+              "displayName": "Created In",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Qualification",
+              "displayName": "Qualification",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Qualify",
+                  "value": "Qualify"
+                },
+                {
+                  "name": "Not Qualify",
+                  "value": "Not Qualify"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Message",
+              "displayName": "Message",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Contacted",
+              "displayName": "Contacted",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Contacted",
+                  "value": "Contacted"
+                },
+                {
+                  "name": "Not Contacted",
+                  "value": "Not Contacted"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        768,
+        -176
+      ],
+      "id": "83878880-37b8-485d-98aa-90b53f9b2e06",
+      "name": "Update record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "gPN2D5Oe56RzMyO5",
+          "name": "Airtable account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.fields.Qualification }}",
+                    "rightValue": "Qualify",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "8043e605-55e2-461e-a3de-cc4ed3ef7b7c"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Qualify"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "3d9052f2-9505-47c3-88d6-0d81acb1fc6f",
+                    "leftValue": "={{ $json.fields.Qualification }}",
+                    "rightValue": "Not Qualify",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Not Qualify"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        -64
+      ],
+      "id": "44f1895d-3f6b-495b-9fea-0b4d918983f5",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "fromEmail": "mabdeldayem052@gmail.com",
+        "toEmail": "={{ $('Airtable Trigger').item.json.fields.Email }}",
+        "subject": "Thanks for reaching out.",
+        "emailFormat": "text",
+        "text": "=Hi {{ $json.fields['First Name'] }},\n\nThanks for reaching out and for sharing a bit about your goals.\nAfter reviewing your request, it looks like we may not be the best fit for this one right now.\n\nThat said, I really appreciate your interest, and I’d be happy to reconnect in the future if your needs change.\n\nBest,\nMohamed",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        480,
+        272
+      ],
+      "id": "4d18c93a-bfcf-4d3c-90cf-5bc34dfc7bd8",
+      "name": "Send an Email1",
+      "webhookId": "06ecc324-e63d-4773-84b1-99b48c2be6fa",
+      "credentials": {
+        "smtp": {
+          "id": "sdm94F27eEBp1Kl1",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0B79D5JUTU",
+          "mode": "list",
+          "cachedResultName": "marketing"
+        },
+        "text": "={{ $json.fields.Message.value }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.5,
+      "position": [
+        496,
+        -112
+      ],
+      "id": "f3b2b5cf-e959-4349-b63d-745f7fc4e442",
+      "name": "Send a message",
+      "webhookId": "2b4aae77-3dd1-457f-b717-40c60faca6a3",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "nN0l7153Ys1nLZl9",
+          "name": "Slack OAuth2 API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Airtable Trigger": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send an Email": {
+      "main": [
+        [
+          {
+            "node": "Update record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send an Email1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "d9e63317-1fb6-476b-8c1b-a355db31580f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "bc6d6c8cbea91be026b32224ce4d707cbbeee522b805b4fcb7e2aa736e5f31e4"
+  },
+  "id": "Cl0u8XJIfLprZ2hW",
+  "tags": []
+}

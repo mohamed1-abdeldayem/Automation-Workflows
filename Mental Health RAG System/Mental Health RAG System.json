@@ -1,0 +1,474 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are a Mental Health AI Assistant designed to provide supportive, educational, and evidence-based information related to mental health and emotional wellbeing.\n\nYour primary role is to:\n\n* Answer mental health questions using information retrieved from the Mental Health Knowledge Base.\n* Provide psychoeducation about mental health conditions, emotional wellbeing, coping strategies, stress management, anxiety, depression, burnout, self-care, and personal growth.\n* Help users better understand mental health concepts in a clear, compassionate, and professional manner.\n* Use retrieved knowledge whenever possible to ensure accuracy and consistency.\n* Maintain a supportive and respectful conversational experience.\n\nYou have access to 2 tools to help fulfill requests:\n\n[MENTAL HEALTH KNOWLEDGE BASE]:\nSearches a vector database containing trusted mental health resources, educational materials, therapeutic concepts, clinical guidance, self-help content, and mental wellness information.\n\n[SIMPLE MEMORY]:\nStores conversation context during the session to maintain continuity and provide more personalized responses.\n\nWhen a task requires information, first search the Mental Health Knowledge Base and use the retrieved context to formulate your answer. If relevant information is available in the knowledge base, prioritize it over general model knowledge.\n\nRESPONSE GUIDELINES\n\n1. KNOWLEDGE BASE FIRST\n\n* Always attempt to use retrieved knowledge before relying on general knowledge.\n* Ground responses in retrieved content whenever possible.\n* Combine multiple retrieved sources into a coherent answer.\n\n2. COMMUNICATION STYLE\n\n* Be empathetic, calm, supportive, and professional.\n* Use clear and understandable language.\n* Avoid judgmental, dismissive, or overly clinical language.\n* Show understanding of the user's emotional concerns while remaining objective.\n\n3. EDUCATIONAL PURPOSE\n\n* Provide educational information and general guidance.\n* Help users understand mental health topics and coping approaches.\n* Explain concepts in a practical and accessible way.\n\n4. IMPORTANT LIMITATIONS\n\n* Do not claim to be a licensed therapist, psychologist, psychiatrist, or healthcare provider.\n* Do not diagnose mental health conditions.\n* Do not prescribe medications.\n* Do not provide medical treatment plans.\n* Do not guarantee outcomes.\n\n5. SAFETY\n\n* If a user expresses thoughts of self-harm, suicide, violence, or immediate danger:\n\n  * Respond with compassion and concern.\n  * Encourage contacting emergency services, crisis hotlines, or qualified mental health professionals.\n  * Encourage reaching out to trusted family members, friends, or caregivers.\n  * Prioritize safety over educational discussion.\n\n6. MEMORY USAGE\n\n* Use relevant conversation history when helpful.\n* Maintain continuity across the current session.\n* Avoid making assumptions not supported by the conversation.\n\n7. RESPONSE FORMAT\n\nFor informational questions:\n\n* Brief Summary\n* Detailed Explanation\n* Practical Takeaways\n\nFor emotional support:\n\n* Acknowledge Feelings\n* Provide Supportive Guidance\n* Suggest Healthy Coping Strategies\n* Encourage Professional Support when appropriate\n\nYour goal is to provide accurate, compassionate, evidence-informed mental health assistance while using the knowledge base as the primary source of information and maintaining a supportive user experience.\n\nCurrent Date/Time:\n{{ $now }}\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1280,
+        1632
+      ],
+      "id": "972c387f-d549-42a0-9964-99c2efc66780",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        1376,
+        1968
+      ],
+      "id": "89f3c6a5-aab4-4726-be5e-14367e82106f",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "embeddingBatchSize": null,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [
+        1536,
+        944
+      ],
+      "id": "d07c32a0-5b99-47af-8971-7aa094e88eac",
+      "name": "Supabase Vector Store",
+      "notesInFlow": false,
+      "credentials": {
+        "supabaseApi": {
+          "id": "f57D4aCoCVkvDjhP",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonMode": "expressionData",
+        "jsonData": "={{ $json.text }}",
+        "textSplittingMode": "custom",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        1744,
+        1104
+      ],
+      "id": "32650078-1aa6-4413-be2e-7b2af35d5265",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        672,
+        1056
+      ],
+      "id": "c2ebb595-cc80-4a66-86b8-372b1a2296b8",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "uYIBN468hkRuY3zg",
+          "name": "Google Drive OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "binaryPropertyName": "=data",
+        "options": {
+          "joinPages": true
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        992,
+        1056
+      ],
+      "id": "d8d6d4dc-95be-4431-9327-91f13c5c4214",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Supabase",
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [
+        1520,
+        1872
+      ],
+      "id": "5adbaffa-5fbe-40c2-9515-53a6a2c7cb4e",
+      "name": "Supabase Vector Store1",
+      "credentials": {
+        "supabaseApi": {
+          "id": "f57D4aCoCVkvDjhP",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chunkOverlap": 100,
+        "options": {
+          "splitCode": "markdown"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        1920,
+        1232
+      ],
+      "id": "53889e4e-3d45-498d-933a-065013304a1d",
+      "name": "Recursive Character Text Splitter"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1360,
+        1248
+      ],
+      "id": "a18183ed-9489-457e-9aa3-cd71863d863c",
+      "name": "Embeddings OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "yGIpwX1RvENeYQFR",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "Hi there! 👋\nMy name is Dayem. How can I assist you today?",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        976,
+        1632
+      ],
+      "id": "5614bca5-d0a1-46c7-9afc-2d89b0958980",
+      "name": "When chat message received",
+      "webhookId": "ca81b2fe-ef9a-496c-b94e-2228203433c1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1696,
+        2016
+      ],
+      "id": "ffdc8f1b-e543-4dff-a1d5-4fd2566ab195",
+      "name": "Embeddings OpenAI1",
+      "credentials": {
+        "openAiApi": {
+          "id": "V7msqfRdmTxMxk3T",
+          "name": "OpenAI account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1jpV3EsAZgzGxd7pnK3KAevScJVO7tAOb",
+          "mode": "list",
+          "cachedResultName": "Mental Health RAG System",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1jpV3EsAZgzGxd7pnK3KAevScJVO7tAOb"
+        },
+        "event": "fileCreated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        384,
+        1056
+      ],
+      "id": "862656a6-825c-4f05-9d1f-9c3d934d5c92",
+      "name": "Google Drive Trigger",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "uYIBN468hkRuY3zg",
+          "name": "Google Drive OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# 📂 Google Drive File Detection\n\n## This stage monitors the configured Google Drive folder for newly created files. When a new file is detected, the workflow automatically retrieves the file metadata and downloads the document for further processing in the ingestion pipeline.\n\n## Steps:\n### • Watch the target Google Drive folder.\n### • Detect newly uploaded files.\n### • Retrieve file information and metadata.\n### • Download the file content.\n",
+        "height": 832,
+        "width": 544
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        320,
+        528
+      ],
+      "typeVersion": 1,
+      "id": "77adf2c0-acd4-42b8-acc1-60bfd59ff534",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "# 📄 Document Extraction\n\n## This stage extracts readable text from the downloaded document. The extracted content is prepared for chunking and embedding generation in the next stages of the RAG pipeline.\n\n## Steps:\n### • Read the downloaded file.\n### • Extract textual content from the document.\n### • Preserve document structure when possible.\n",
+        "height": 832,
+        "width": 448,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        864,
+        528
+      ],
+      "typeVersion": 1,
+      "id": "831bdc36-454d-4263-871f-eb7febc4c507",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "# 🗄️ Supabase Vector Store\n\n## This stage stores document chunks and their corresponding embeddings in Supabase for semantic search and retrieval.\n\n## Purpose:\n### • Save processed text chunks.\n### • Store vector embeddings.\n### • Maintain document metadata.\n### • Enable similarity search for RAG retrieval.\n### • Provide relevant context to the AI Agent during user queries.\n\n## Output:\n#### Indexed documents are available for semantic search and knowledge retrieval.\n",
+        "height": 832,
+        "width": 768,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1312,
+        528
+      ],
+      "typeVersion": 1,
+      "id": "4a245bc9-e154-4a42-a26e-9a4843b7554f",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "# 🤖 Mental Health AI Agent\n\n## This stage serves as the central intelligence of the system. The AI Agent receives user queries, retrieves relevant context from the Supabase Vector Store, utilizes conversation memory, and generates accurate, empathetic, and evidence-based responses.\n\n## Capabilities:\n### • Understand user questions and intent.\n### • Retrieve relevant knowledge from the vector database.\n### • Use conversation memory for context awareness.\n### • Generate compassionate and informative responses.\n### • Ground answers in the knowledge base whenever possible.\n### • Maintain a supportive and professional conversational experience.\n",
+        "height": 816,
+        "width": 1760,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        320,
+        1360
+      ],
+      "typeVersion": 1,
+      "id": "23e1837e-1d5d-44c7-8034-95e22bf5cf22",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1152,
+        1968
+      ],
+      "id": "eaf26b45-fa1a-4404-85f3-76b53c3f135b",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "V7msqfRdmTxMxk3T",
+          "name": "OpenAI account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Vector Store1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive Trigger": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "3c8f34c0-35b2-4e6c-aca5-a35d1c587932",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "bc6d6c8cbea91be026b32224ce4d707cbbeee522b805b4fcb7e2aa736e5f31e4"
+  },
+  "id": "mrk6e7DGmfYOOoJ8",
+  "tags": []
+}
