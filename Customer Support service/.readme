@@ -1,0 +1,209 @@
+# Customer Support System
+
+## Overview
+Customer Support System is an AI-powered support platform designed to automate customer interactions, answer questions, and improve response efficiency.
+
+The system can:
+- Handle customer inquiries
+- Classify support requests
+- Retrieve information from a knowledge base
+- Generate responses using AI
+- Escalate complex issues to human agents
+
+---
+
+## Features
+
+### Customer Support
+- FAQ answering
+- Ticket creation
+- Issue categorization
+- Response generation
+- Multi-turn conversations
+
+### AI Capabilities
+- Natural language understanding
+- Context-aware responses
+- Retrieval-Augmented Generation (RAG)
+- Knowledge base search
+
+### Integrations
+- Telegram
+- Web chat
+- Email
+- CRM systems
+- API integrations
+
+---
+
+## System Architecture
+
+```text
+Customer
+   ↓
+Frontend / Chat Interface
+   ↓
+API Gateway
+   ↓
+Support Service
+   ↓
+AI Agent
+   ↓
+Knowledge Base
+   ↓
+Database
+```
+
+---
+
+## Tech Stack
+
+### Backend
+- FastAPI
+- Python
+
+### AI
+- LangChain
+- OpenAI API
+- Embeddings
+
+### Database
+- PostgreSQL
+- Vector Database
+
+### Automation
+- n8n
+
+---
+
+## Installation
+
+### Clone Repository
+
+```bash
+git clone <repository-url>
+cd customer-support
+```
+
+### Create Environment
+
+```bash
+python -m venv venv
+```
+
+Activate:
+
+Windows:
+```bash
+venv\Scripts\activate
+```
+
+Linux/Mac:
+```bash
+source venv/bin/activate
+```
+
+Install Dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## Configuration
+
+Create `.env`
+
+```env
+OPENAI_API_KEY=
+
+DATABASE_URL=
+
+TELEGRAM_BOT_TOKEN=
+
+VECTOR_DB_URL=
+```
+
+---
+
+## Run Application
+
+```bash
+uvicorn main:app --reload
+```
+
+Server:
+
+```
+http://localhost:8000
+```
+
+API Docs:
+
+```
+http://localhost:8000/docs
+```
+
+---
+
+## API Endpoints
+
+### Send Message
+
+```http
+POST /chat
+```
+
+Request:
+
+```json
+{
+  "message": "How do I reset my password?"
+}
+```
+
+Response:
+
+```json
+{
+  "answer": "Follow these steps..."
+}
+```
+
+---
+
+## Project Structure
+
+```text
+customer-support/
+│
+├── app/
+│   ├── api/
+│   ├── services/
+│   ├── agents/
+│   ├── rag/
+│   ├── database/
+│   └── utils/
+│
+├── docs/
+├── tests/
+├── requirements.txt
+└── README.md
+```
+
+---
+
+## Future Improvements
+
+- Human handoff
+- Voice support
+- Analytics dashboard
+- Multi-language support
+- Sentiment analysis
+
+---
+
+## License
+
+MIT License
